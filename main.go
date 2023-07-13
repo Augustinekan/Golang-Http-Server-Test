@@ -72,7 +72,13 @@ func getRoot(w http.ResponseWriter, r *http.Request) {
 
 func getHello(w http.ResponseWriter, r *http.Request) {
 	myContext := r.Context()
-	fmt.Printf("%s : got /hello request\n", myContext.Value(keyServerAddress))
+
+	var hasFirst bool = r.URL.Query().Has("first") // returns whether there is a filter value for the given key
+	var hasSecond bool = r.URL.Query().Has("second")
+	first := r.URL.Query().Get("first") //returns empty string if no input from user or a filter value if provided
+	second := r.URL.Query().Get("second")
+
+	fmt.Printf("%s : got /hello request.\nHas First: %t = %s\nHas second: %t = %s\n", myContext.Value(keyServerAddress), hasFirst, first, hasSecond, second)
 	io.WriteString(w, "Hello, HTTP!\n")
 }
 
