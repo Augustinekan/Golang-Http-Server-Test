@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -84,6 +85,26 @@ func getHello(w http.ResponseWriter, r *http.Request) {
 
 func getGustine(w http.ResponseWriter, r *http.Request) {
 	myContext := r.Context()
+	var data = r.Body
+	var body Body
+	fmt.Printf("Body Data: %s\n", data)
+
+	err := json.NewDecoder(data).Decode(&body)
+
+	if err != nil {
+		http.Error(w, "Error decoding JSON", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("Body Decoded: %s\n", body)
+	fmt.Println("Body Decoded Name:", body.Name)
+
 	fmt.Printf("%s : Got a /gustine Request\n", myContext.Value(keyServerAddress))
 	io.WriteString(w, "My Name Is Gustine")
+
+}
+
+type Body struct {
+	Name string `json:"name"`
+	Page string `json:"page"`
 }
