@@ -35,7 +35,7 @@ func main() {
 	myMux.HandleFunc("/", getRoot)
 	myMux.HandleFunc("/hello", getHello)
 	myMux.HandleFunc("/gustine", getGustine)
-
+	myMux.HandleFunc("/userData", getUserData)
 	go func() {
 		err := serverOne.ListenAndServe()
 		if errors.Is(err, http.ErrServerClosed) {
@@ -83,7 +83,7 @@ func getHello(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Hello, HTTP!\n")
 }
 
-func getGustine(w http.ResponseWriter, r *http.Request) {
+func getGustine(w http.ResponseWriter, r *http.Request) { //Accepts a request bodt
 	myContext := r.Context()
 	var data = r.Body
 	var body Body
@@ -101,6 +101,17 @@ func getGustine(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("%s : Got a /gustine Request\n", myContext.Value(keyServerAddress))
 	io.WriteString(w, "My Name Is Gustine")
+
+}
+
+func getUserData(w http.ResponseWriter, r *http.Request) { //Read Multipart form data
+	requestContext := r.Context()
+
+	userName := r.PostFormValue("name")
+	phoneNumber := r.PostFormValue("phone")
+	fmt.Printf("\nUser Name: %s\nPhone number: %s\n", userName, phoneNumber)
+	fmt.Printf("%s: Got a userData Request", requestContext.Value(keyServerAddress))
+	io.WriteString(w, "You called the userData Endpoint")
 
 }
 
