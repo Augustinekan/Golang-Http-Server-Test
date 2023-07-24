@@ -109,6 +109,13 @@ func getUserData(w http.ResponseWriter, r *http.Request) { //Read Multipart form
 
 	userName := r.PostFormValue("name")
 	phoneNumber := r.PostFormValue("phone")
+
+	if userName == "" {
+		w.Header().Set("x-missing-field", "name")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	fmt.Printf("\nUser Name: %s\nPhone number: %s\n", userName, phoneNumber)
 	fmt.Printf("%s: Got a userData Request", requestContext.Value(keyServerAddress))
 	io.WriteString(w, "You called the userData Endpoint")
